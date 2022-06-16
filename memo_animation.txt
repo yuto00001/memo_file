@@ -1,0 +1,77 @@
+よく使われるのは、移動、回転、リサイズの 3 つ
+
+移動に translate という値を使うのですが、
+translateX で x 方向、
+translateY で y 方向、
+translate で xy 方向の移動量を一緒に指定する
+回転 ＝ rotate
+
+scaleX で x 方向のリサイズ、
+scaleY で y 方向のリサイズ、
+scale で xy 方向のリサイズを一気に指定することができます。
+
+-------------------------------------------
+アニメーションの速度に緩急をつけることができるプロパティ『transition』
+
+規定値・最初と最後にブレーキがかかる。
+transition-timing-function: ease
+小さなUI部品・弾かれたように動く・アラート等
+transition-timing-function: ease-out
+大きなUI部品・重そうに動く・ドロワー等
+transition-timing-function: ease-in-out
+回転する部品・機械的に等速で動く・ローディングアイコン等
+transition-timing-function: linear
+
+デベロッパーツールを使った調整が可能なプロパティ
+（ブラウザの開発から、cubic-bezierをビジュアルから調整できる。）
+transition-timing-function: ease-out;
+★引き返すブレーキ・終点で少し戻る・色や位置の変化で少し印象を残せる。
+transition-timing-function: cubic-bezier(0.39, 0.35, 0.64, 1.77);
+
+transition 関連のプロパティですが、一括で指定することもできます。時間っぽい値をふたつ指定すると、最初のほうが duration 、次の値が delay の指定になるので、 delay を指定したい場合は 0.5 秒のあとに書いてあげれば OK。1 秒後に 0.5 秒かけてアニメーション。
+transition: transform .5s ease-out 1s;
+
+-------------------------------------------
+高度なアニメーションを表現することができるプロパティ『animation』
+
+変化前、変化後だけではなくてその途中に好きなタイミングでキーとなるフレームを挟んで、そのキーフレームごとにスタイルを設定して、アニメーションさせていくことができるようになります。
+それから transition と違って、設定したアニメーションを何度も繰り返したりすることもできる
+
+まずは @keyframes というキーワードでキーフレームの名前を指定して、そのあとに、どの地点のフレームでどのようなスタイルにしたいか指定してあげれば OK。
+
+ex)
+@keyframes move {
+  0% { transform: none; }
+  80% { transform: translateX(100px) rotate(360deg); }
+  100% { transform: translateX(0px) rotate(180deg); }
+}
+animation-name: move;
+animation-duration: 2s;
+
+２秒かけてアニメーションする
+animation-duration: 2s;
+１秒後にアニメーションする
+animation-delay: 1s;
+アニメーションを最終地点に固定する
+  animation-fill-mode: forwards;
+アニメーションを無限に繰り返す
+  animation-iteration-count: infinite;
+アニメーションを折り返す(逆処理)
+animation-direction: alternate;
+アニメーションを逆再生する
+animation-direction: reverse;
+アニメーションを逆再生から折り返す
+animation-direction: alternate-reverse;
+アニメーションを等速で動かす
+animation-timing-function: linear;
+
+アニメーションの一括指定プロパティ
+今まで指定してきた値を順不同かつ、省略可で並べていけばいい
+ex)
+animation: move 2s infinite;
+
+メッセージが消えたあとは、マウスのイベントに反応しないようにする(背後にボタンなどがあると押せなくなってしまうから)
+pointer-events: none;
+
+
+-------------------------------------------

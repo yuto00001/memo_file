@@ -1,0 +1,118 @@
+グリッドレイアウトを作るには、まず配置したい要素に親要素が必要になる。
+container(親要素) に対して display: grid; としてあげれば準備完了。
+
+●列を設定　＝　 grid-template-columns を使ってそれぞれの列の幅を列挙。2 列の場合、 2 つの値を並べる。
+grid-template-columns: 100px 100px;
+
+
+●行を設定　＝　grid-template-rows を使って行の高さを列挙。3 行分作りたい場合、 3 つの値を並べる。
+grid-template-rows: 100px 100px 100px;
+
+デフォルトだと要素は左上から順番に並べられる。
+
+●可変幅の設定　＝　fraction という単位を使う。たとえば下記のように 1fr とすれば、 100px 、100px を配置したあとの余白をこちらに割り当てることができる。
+grid-template-columns: 100px 1fr 100px;
+●下記のように記述すれば、100px使った余を２対１で配置される。
+grid-template-columns: 100px 2fr 1fr;
+
+●要素数が増え、コンテンツの幅を超えてしまったとき、自動でサイズを調整する　＝　grid-template-rows で設定した高さが 2 行までの場合、要素が増えると、 3 行目以降がコンテンツの高さになる。ここで、 3 行目以降も同じ高さにしたかったら、下記のように記述すれば、こちらの grid で定義されていない行ができた場合にその高さが 100px になる。
+grid-auto-rows: 100px;
+
+
+--------------------------------------------------------------------------------------------------------------
+
+●列の間と行の間で余白の設定を変えたい場合　＝　gapというプロパティを使う。値を一つで設定すれば縦横同比率で設定できるが、値を二つ記述する場合は、縦方向の余白、横方向の余白の順番で書いてあげれば OK。
+gap: 20px 40px;
+
+●グリッドの列や行を繰り返す記述で容易に設定する　＝　repeat() という命令を使う。たとえば、100px の列が 4 つ欲しかったら、 repeat(4, 100px) と書いてあげれば、 100px を 4 つ並べたことになる。
+grid-template-columns: repeat(4, 100px);
+
+●●列数を固定せず、親要素の幅に入る限りという設定　＝　repeat() の数を固定ではなくて auto-fill とする。（親要素の幅を超えると、余白が発生する）
+grid-template-columns: repeat(auto-fill, 100px);
+
+●新しい列が増えるまでは余白いっぱいまで均等に幅を広げる　＝　こちらの列の幅を 100px ではなくて、 minmax(100px, 1fr) とする。
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+●●親要素の幅を超えて配置する要素がなくなったとき、横幅いっぱいに均等に配置する　＝　auto-fill を auto-fit にする。
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+
+--------------------------------------------------------------------------------------------------------------
+
+●box1をbox5の位置に配置する　＝　grid-row は 2 、そして grid-column も 2 なので、そのように box1 に対して指定する。なお、個別に位置を指定しなかった要素は今まで通りに配置される。解説動画【https://dotinstall.com/lessons/basic_cssgrid_v2/53209】
+.box1-1 {
+  grid-row: 2;
+  grid-column: 2;
+}
+●余白を生んでしまっている最後のboxを、余白が埋まるように伸ばして配置する　＝　grid-column のほうを下記のように記述する。以下の場合は、どれも同じ結果となる。
+.box1-1 {
+  grid-column: 2 / 4;
+}
+.box1-1 {
+  grid-column: 2 / -1;
+}
+.box1-1 {
+  grid-column: 2 / span 2;
+}
+
+●グリッドラインの調整に汎用性,応用性を持たせる　＝　グリッドラインに名前をつけて使用する。たとえば、親要素でグリッドラインの特定の箇所に target-start 、 target-end と名前を付ければ、子要素での指定でその名前を使うことができる。また -start 、 -end としていれば、子要素ではさらに短く target と書くこともできる。名前は自由に命名可能。
+.container5 {
+  display: grid;
+  grid-template-columns: 100px [target-start] 100px 100px [target-end];
+  grid-template-rows: 100px 100px;
+}
+.box1-1 {
+  background: hsl(0, 60%, 60%);
+  grid-row: 2;
+  grid-column: target;
+}
+
+●左上から列ごとに並べたい場合　＝　下記のように記述する。
+grid-auto-flow: column;
+
+●配置されている位置から縦横を 2 マス分にしたい場合　＝　grid-column と grid-row に対して span 2 を指定してあげれば縦横方向に 2 マス分の大きさになる
+.box2-1{
+  background: hsl(60, 60%, 60%);
+  grid-column: span 2;
+  grid-row: span 2;
+}
+●大きさの異なる画像をきれいに並べる　＝　プロパティに dense というキーワードを追加する。
+grid-auto-flow: column dense;
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+●配置する領域を直感的に指定する　＝　grid-template-areas を使って文字列でレイアウトを組む。この中で要素を配置したくない箇所がある場合は、 . （ピリオド）を使ってあげれば OK。また、こちらで配置する領域は四角になっていないといけない。
+.container7 {
+  display: grid;
+  grid-template-columns: repeat(5, 100px);
+  grid-template-rows: repeat(4, 100px);
+  grid-template-areas:
+    "r r r y y"
+    "r r r y y"
+    "c c g y y"
+    "c c b y y";
+}
+.box1-7 {
+  grid-area: r;
+}
+.box2-7 {
+  grid-area: y;
+}
+.box3-7 {
+  grid-area: g;
+}
+.box4-7 {
+  grid-area: c;
+}
+.box5-7 {
+  grid-area: b;
+}
+
+
+--------------------------------------------------------------------------------------------------------------
+
+●●●要素を揃えるプロパティ。flex-box的な指定が可能になる。
+解説動画【https://dotinstall.com/lessons/basic_cssgrid_v2/53215】
+
